@@ -1,39 +1,48 @@
 <template>
   <div class="container column">
-    <form class="card card-w30">
-      <div class="form-control">
-        <label for="type">Тип блока</label>
-        <select id="type">
-          <option value="title">Заголовок</option>
-          <option value="subtitle">Подзаголовок</option>
-          <option value="avatar">Аватар</option>
-          <option value="text">Текст</option>
-        </select>
-      </div>
+    <form class="card card-w30" @submit.prevent="onSubmitHandler">
+      <app-select
+        ref="selectRef"
+        label="Выберите тип блока"
+        @option-selected="onSelected"
+      ></app-select>
 
-      <div class="form-control">
-        <label for="value">Значение</label>
-        <textarea id="value" rows="3"></textarea>
-      </div>
+      <app-textarea
+        ref="textareaRef"
+        placeholder="Введите текст"
+        label="Значение"
+        v-model="valueText"
+        :rows="4"
+      ></app-textarea>
 
-      <button class="btn primary">Добавить</button>
+      <app-button
+        :valueText="valueText.length"
+        @add-block="addBlock"
+        :disabled="true"
+        >Добавить</app-button
+      >
     </form>
 
     <div class="card card-w70">
-      <h1>Резюме Nickname</h1>
-      <div class="avatar">
-        <img src="https://cdn.dribbble.com/users/5592443/screenshots/14279501/drbl_pop_r_m_rick_4x.png">
+      <div v-if="isActive" class="blocks-wrapper">
+        <!-- <li v-for="item in blocks" :key="item">{{item}}</li> -->
+     
+          <component
+            :is="item.value"
+            v-for="(item) in blocks"
+            :key="item.name"
+            :valueForComponent="item.name"
+          ></component>
+  
       </div>
-      <h2>Опыт работы</h2>
-      <p>
-        главный герой американского мультсериала «Рик и Морти», гениальный учёный, изобретатель, атеист (хотя в некоторых сериях он даже молится Богу, однако, каждый раз после чудесного спасения ссылается на удачу и вновь отвергает его существование), алкоголик, социопат, дедушка Морти. На момент начала третьего сезона ему 70 лет[1]. Рик боится пиратов, а его главной слабостью является некий - "Санчезиум". Исходя из того, что существует неограниченное количество вселенных, существует неограниченное количество Риков, герой сериала предположительно принадлежит к измерению С-137. В серии комикcов Рик относится к измерению C-132, а в игре «Pocket Mortys» — к измерению C-123[2]. Прототипом Рика Санчеза является Эмметт Браун, герой кинотрилогии «Назад в будущее»[3].
-      </p>
-      <h3>Добавьте первый блок, чтобы увидеть результат</h3>
+      <h3 v-else>Добавьте первый блок, чтобы увидеть результат</h3>
     </div>
   </div>
-  <div class="container">
+  <!-- <div class="container">
     <p>
-      <button class="btn primary">Загрузить комментарии</button>
+      <app-button
+        
+      >Загрузить комментарии</app-button>
     </p>
     <div class="card">
       <h2>Комментарии</h2>
@@ -41,30 +50,83 @@
         <li class="list-item">
           <div>
             <p><strong>test@microsoft.com</strong></p>
-            <small>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi, reiciendis.</small>
+            <small
+              >Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              Eligendi, reiciendis.</small
+            >
           </div>
         </li>
       </ul>
     </div>
     <div class="loader"></div>
-  </div>
+  </div> -->
 </template>
 
 <script>
-export default {
+import AppSelect from "./components/AppSelect";
+import AppTextarea from "./components/AppTextarea";
+import AppButton from "./components/AppButton";
+import Title from "./components/elements/Title";
+import Subtitle from "./components/elements/Subtitle";
+import Avatar from "./components/elements/Avatar";
+import Text from "./components/elements/Text";
 
-}
+export default {
+  data() {
+    return {
+      valueText: "",
+      isActive: false,
+      blocks: [],
+      currentComponent: "title",
+      activeSelectedValue: "title",
+    };
+  },
+  computed: {
+    // currentProps() {
+    //   if(this.currentComponent === 'Title'){
+    //     // return console.log('this is title')
+    //     // return 'Title'
+    //   }
+    // }
+  },
+  methods: {
+    onSubmitHandler() {
+      this.valueText = "";
+      this.isActive = true;
+      this.$refs.selectRef.optionDefault();
+    },
+    onSelected(data) {
+      this.activeSelectedValue = data;
+    },
+    addBlock() {
+      this.currentComponent = this.activeSelectedValue
+      this.blocks.push({name: this.valueText, value: this.currentComponent});
+      // console.log(this.activeSelectedValue);
+      // console.log(this.valueText);
+    },
+  },
+
+  components: {
+    AppSelect,
+    AppTextarea,
+    AppButton,
+    Title,
+    Subtitle,
+    Avatar,
+    Text,
+  },
+};
 </script>
 
 <style>
-  .avatar {
-    display: flex;
-    justify-content: center;
-  }
+.avatar {
+  display: flex;
+  justify-content: center;
+}
 
-  .avatar img {
-    width: 150px;
-    height: auto;
-    border-radius: 50%;
-  }
+.avatar img {
+  width: 150px;
+  height: auto;
+  border-radius: 50%;
+}
 </style>
