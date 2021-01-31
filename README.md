@@ -2,7 +2,7 @@
 
 ## Live preview
 ```
-See https://generator-resume.web.app/
+[Watch](https://generator-resume.web.app/)
 ```
 
 ## Project setup
