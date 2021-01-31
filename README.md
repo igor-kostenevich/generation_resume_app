@@ -1,5 +1,10 @@
 # vue_resume
 
+## Live preview
+```
+See https://generator-resume.web.app/
+```
+
 ## Project setup
 ```
 npm install
