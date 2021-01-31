@@ -1,5 +1,5 @@
 <template>
-  <h2>{{ valueForComponent }}</h2>
+  <h2>{{ valueForComponent }}<slot></slot></h2>
 </template>
 
 <script>
@@ -9,6 +9,3 @@ export default {
   }
 };
 </script>
-
-<style>
-</style>

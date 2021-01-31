@@ -24,42 +24,26 @@
     </form>
 
     <div class="card card-w70">
-      <div v-if="isActive" class="blocks-wrapper">
-        <!-- <li v-for="item in blocks" :key="item">{{item}}</li> -->
-     
-          <component
-            :is="item.value"
-            v-for="(item) in blocks"
-            :key="item.name"
-            :valueForComponent="item.name"
-          ></component>
-  
+      <div v-if="blocks.length" class="blocks-wrapper">
+        <component
+          :is="item.nameComponent"
+          v-for="item in blocks"
+          :key="item"
+          :valueForComponent="item.value"
+        ></component>
       </div>
       <h3 v-else>Добавьте первый блок, чтобы увидеть результат</h3>
     </div>
   </div>
-  <!-- <div class="container">
-    <p>
-      <app-button
-        
-      >Загрузить комментарии</app-button>
-    </p>
-    <div class="card">
-      <h2>Комментарии</h2>
-      <ul class="list">
-        <li class="list-item">
-          <div>
-            <p><strong>test@microsoft.com</strong></p>
-            <small
-              >Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              Eligendi, reiciendis.</small
-            >
-          </div>
-        </li>
-      </ul>
-    </div>
-    <div class="loader"></div>
-  </div> -->
+  <div class="container">
+    <app-loader v-if="loading"></app-loader>
+    <component 
+      :is="'app-comments'" 
+      :comments="comments" 
+      :loadComments="loadComments" 
+      v-else
+    ></component>
+  </div>
 </template>
 
 <script>
@@ -70,39 +54,41 @@ import Title from "./components/elements/Title";
 import Subtitle from "./components/elements/Subtitle";
 import Avatar from "./components/elements/Avatar";
 import Text from "./components/elements/Text";
+import AppComments from "./components/AppComments";
+import AppLoader from "./components/AppLoader";
+import axios from "axios";
 
 export default {
   data() {
     return {
       valueText: "",
-      isActive: false,
       blocks: [],
       currentComponent: "title",
       activeSelectedValue: "title",
+      comments: [],
+      loading: false,
     };
   },
-  computed: {
-    // currentProps() {
-    //   if(this.currentComponent === 'Title'){
-    //     // return console.log('this is title')
-    //     // return 'Title'
-    //   }
-    // }
-  },
+  computed: {},
   methods: {
     onSubmitHandler() {
       this.valueText = "";
-      this.isActive = true;
       this.$refs.selectRef.optionDefault();
     },
     onSelected(data) {
       this.activeSelectedValue = data;
     },
     addBlock() {
-      this.currentComponent = this.activeSelectedValue
-      this.blocks.push({name: this.valueText, value: this.currentComponent});
-      // console.log(this.activeSelectedValue);
-      // console.log(this.valueText);
+      this.currentComponent = this.activeSelectedValue;
+      this.blocks.push({ nameComponent: this.currentComponent, value: this.valueText  });
+    },
+    async loadComments() {
+      this.loading = true;
+      const { data } = await axios.get(
+        "https://jsonplaceholder.typicode.com/comments?_limit=42"
+      );
+      this.comments = data;
+      this.loading = false;
     },
   },
 
@@ -114,6 +100,8 @@ export default {
     Subtitle,
     Avatar,
     Text,
+    AppComments,
+    AppLoader,
   },
 };
 </script>

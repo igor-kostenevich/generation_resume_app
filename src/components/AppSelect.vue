@@ -4,7 +4,7 @@
     <select :id="id" v-model="option">
       <option 
         v-for="item in options" 
-        :key="item.id" 
+        :key="item" 
         :value="item.value"
         :click="isActiveOption(item)"
       >
@@ -25,7 +25,6 @@ export default {
     },
     isActiveOption(item){
       if(item.value === this.option){
-        console.log(this.option);
         this.$emit('option-selected', item.value) 
       }
     }
