@@ -1,9 +1,8 @@
 # vue_resume
 
 ## Live preview
-```
 [Watch](https://generator-resume.web.app/)
-```
+
 
 ## Project setup
 ```
